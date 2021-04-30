@@ -26,7 +26,7 @@ from django.db.utils import IntegrityError
 
 class Command(BaseCommand):
     """
-    Commands for managing Arches functions
+    Commands for managing Arches reports
 
     """
 
@@ -78,3 +78,52 @@ class Command(BaseCommand):
         )
 
         instance.save()
+
+    def unregister(self, name):
+        """
+        Deletes a report template from the arches db
+
+        """
+        try:
+            report = models.ReportTemplate.objects.get(componentname=name)
+            if report is not None:
+                report.delete()
+                print("Unregistered report "+str(name))
+        except Exception as e:
+            print("Unable to unregister report "+str(name))
+            print(e)
+
+    def update(self, source):
+        """
+        Updates a report template in the arches db
+
+        """
+        try:
+            import json
+
+            details = {}
+
+            with open(source) as f:
+                details = json.load(f)
+
+            report = models.ReportTemplate.objects.get(componentname=details["componentname"])
+            report.name = details["name"]
+            report.description = details["description"]
+            report.component = details["component"]
+            report.defaultconfig = details["defaultconfig"]
+
+            report.save()
+
+            print("Updated report "+str(report.templateid))
+
+        except Exception as e:
+            print(e)
+
+    def list(self):
+        """
+        Lists all report template names that exist in the arches db
+
+        """
+        reports = models.ReportTemplate.objects.all()
+        for report in reports:
+            print(report.name)
