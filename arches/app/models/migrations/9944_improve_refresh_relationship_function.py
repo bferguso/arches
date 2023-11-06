@@ -4,7 +4,7 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('models', '10041_limit_number_of_bulk_edit'),
+        ('models', '9333_file_type_image_config'),
     ]
 
     update_refresh_tile_resource_relationship_function = """
